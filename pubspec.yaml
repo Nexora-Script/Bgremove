@@ -1,0 +1,37 @@
+name: bg_remover
+description: On-device background removal for images and video, no quality loss.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Selfie / subject segmentation model, runs fully on-device (Android + iOS)
+  google_mlkit_selfie_segmentation: ^0.10.0
+
+  # Pixel-level image manipulation (mask upscaling + alpha compositing)
+  image: ^4.2.0
+
+  # File/video pickers
+  image_picker: ^1.1.2
+
+  # Frame extraction + re-encoding for video, keeps original resolution/fps
+  ffmpeg_kit_flutter_new: ^1.6.0
+
+  # Permission handling for camera/gallery/storage
+  permission_handler: ^11.3.1
+
+  path_provider: ^2.1.4
+  path: ^1.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
