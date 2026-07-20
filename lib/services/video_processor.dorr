@@ -7,10 +7,6 @@ import 'package:image/image.dart' as img;
 import 'package:google_mlkit_selfie_segmentation/google_mlkit_selfie_segmentation.dart';
 import 'segmentation_service.dart';
 
-/// Frame-by-frame background removal for video, preserving the source
-/// resolution and framerate exactly. Output is a transparent-background
-/// video using a codec that supports alpha (VP9 in a WebM container, or
-/// ProRes 4444 in a MOV container).
 class VideoProcessor {
   final SegmentationService _segmentationService = SegmentationService();
 
@@ -27,14 +23,10 @@ class VideoProcessor {
     await framesDir.create();
     await mattedDir.create();
 
-    // 1. Read source resolution + framerate so output matches exactly.
-    final probeSession = await FFmpegKit.execute(
-      '-i "$inputPath" -hide_banner',
-    );
+    final probeSession = await FFmpegKit.execute('-i "$inputPath" -hide_banner');
     final probeOutput = await probeSession.getOutput() ?? '';
     final fps = _extractFps(probeOutput) ?? 30;
 
-    // 2. Extract frames losslessly as PNG (no recompression artifacts).
     final extractSession = await FFmpegKit.execute(
       '-i "$inputPath" -vsync 0 "${framesDir.path}/frame_%06d.png"',
     );
@@ -43,7 +35,6 @@ class VideoProcessor {
       throw Exception('Frame extraction failed');
     }
 
-    // 3. Run segmentation per frame, writing RGBA PNGs (no downscaling).
     final frameFiles = framesDir
         .listSync()
         .whereType<File>()
@@ -64,9 +55,6 @@ class VideoProcessor {
       onProgress?.call(i + 1, frameFiles.length);
     }
 
-    // 4. Re-encode at the ORIGINAL fps into an alpha-capable codec.
-    //    VP9 + WebM keeps this cross-platform without licensing issues.
-    //    Swap to prores_ks / .mov if you need ProRes 4444 instead.
     final outputPath = p.join(
       (await getApplicationDocumentsDirectory()).path,
       'bg_removed_${DateTime.now().millisecondsSinceEpoch}.webm',
