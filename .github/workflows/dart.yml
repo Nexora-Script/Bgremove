@@ -24,6 +24,15 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Generate platform folders (safe to re-run, won't overwrite lib/ or pubspec.yaml)
+        run: |
+          echo "Before create:"
+          ls -la
+          flutter create --project-name bg_remover --org com.yourcompany --platforms android .
+          echo "After create:"
+          ls -la android || echo "STILL NO android/ FOLDER — see error above"
+          ls -la android/app || echo "STILL NO android/app/ FOLDER"
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -39,4 +48,3 @@ jobs:
           name: app-release-apks
           path: build/app/outputs/flutter-apk/*.apk
           retention-days: 30
-          
