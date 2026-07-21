@@ -20,7 +20,7 @@ dependencies:
   image_picker: ^1.1.2
 
   # Frame extraction + re-encoding for video, keeps original resolution/fps
-  ffmpeg_kit_flutter_new: ^1.6.0
+  ffmpeg_kit_flutter_new: ^1.6.1
 
   # Permission handling for camera/gallery/storage
   permission_handler: ^11.3.1
